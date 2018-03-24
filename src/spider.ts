@@ -18,7 +18,6 @@ const parse = async (response: superagent.Response) => {
         let content: string = "";
         try {
             content = await getContent(url);
-            await sleep(config.spider.interval * 1000);
         } catch (err) {
             console.log(err);
             content = $(element).find("p").first().text().trim();
