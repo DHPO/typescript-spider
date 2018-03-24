@@ -4,10 +4,9 @@ import spider from "./spider";
 
 const main = async () => {
   await mongodb();
-  console.log("connect ok");
+  console.log("db connect ok");
   await server();
   spider();
-  console.log("done");
 };
 
 main();

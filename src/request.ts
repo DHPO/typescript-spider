@@ -1,16 +1,8 @@
-import superagent = require("superagent");
-import cheerio = require("cheerio");
+import * as superagent from "superagent";
+import config from "./config";
+import sleep from "./sleep";
 
-export const remoteGet = (url: string) => {
-    return new Promise<superagent.Response>((resolve, reject) => {
-        superagent.get(url)
-            .end((err, res) => {
-                if (!err) {
-                    resolve(res);
-                } else {
-                    console.log(err);
-                    reject(err);
-                }
-            });
-    });
+export const remoteGet = async (url: string) => {
+    console.log(`GET ${url}`);
+    return await superagent.get(url);
 };

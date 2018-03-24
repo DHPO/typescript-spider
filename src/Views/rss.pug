@@ -1,0 +1,13 @@
+doctype xml
+rss(version="2.0")
+  channel
+    title cnbeta-rss
+    link https://www.cnbeta.com
+    description 中文业界资讯站
+    each n in news
+      item
+        title #{n.title}
+        link #{n.url}
+        description #{n.content}
+        pubDate #{n.time}
+        

@@ -7,7 +7,7 @@ interface INews extends Document {
   content: string;
 }
 
-export const NewsSchema = new Schema({
+const NewsSchema = new Schema({
   content: String,
   time: Date,
   title: String,
