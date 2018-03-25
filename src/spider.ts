@@ -39,7 +39,7 @@ const getContent = async (url: string) => {
     $(".articleCont>p").each((index, element) => {
         result += "<p>" + $(element).html() || "" + "</p>";
     });
-    const rawTime: string = $("time").text().trim();
+    const rawTime: string = $("time").text().trim() + "+0800";
     return [result, rawTime];
 };
 
