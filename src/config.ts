@@ -3,7 +3,7 @@ export default {
     port: 8080,
   },
   spider: {
-    hostCheckInterval: 3600,
+    hostCheckInterval: 360,
     interval: 0.5,
     maxPage: 10,
   },

@@ -52,4 +52,9 @@ export default async () => {
             console.log(err);
         }
     }
+    while (true) {
+        const response = await remoteGet(`https://m.cnbeta.com/list/latest_1.htm`);
+        await parse(response);
+        await sleep(config.spider.hostCheckInterval * 1000);
+    }
 };
