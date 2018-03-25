@@ -16,7 +16,7 @@ export default async () => {
 
   app.get("/rss", async (req: Request, res: Response) => {
     try {
-      const news = await News.find({}).sort({time: -1}).exec();
+      const news = await News.find({}).sort({time: -1}).limit(20).exec();
       res.render("rss", {news});
     } catch (err) {
       console.log(err);

@@ -1,5 +1,5 @@
 doctype xml
-rss(version="1.0")
+rss(version="2.0")
   channel
     title cnbeta-rss
     link https://www.cnbeta.com
@@ -9,5 +9,5 @@ rss(version="1.0")
         title #{n.title}
         link #{n.url}
         description #{n.content}
-        pubDate #{n.time}
+        pubDate #{n.time.toGMTString()}
         

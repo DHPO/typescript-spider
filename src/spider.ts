@@ -8,22 +8,23 @@ import sleep from "./sleep";
 
 const parse = async (response: superagent.Response) => {
     const $ = cheerio.load(response.text);
-    const items: CheerioElement[] = $(".item").get();
+    const items: CheerioElement[] = $("li.clear").get();
     for (const element of items) {
         const title: string = $(element).find("a").first().text().trim();
         if (title === "" || await News.findOne({title}).exec() !== null) {
             continue;
         }
-        const url: string = $(element).find("a").first().attr("href");
-        let content: string = "";
+        const url: string = "https://m.cnbeta.com" + $(element).find("a").first().attr("href");
+
+        let detail: string[] = [];
         try {
-            content = await getContent(url);
+            detail = await getContent(url);
         } catch (err) {
             console.log(err);
-            content = $(element).find("p").first().text().trim();
+            continue;
         }
-        const rawTime: string = ($(element).find(".status>li").first().text()
-            .match(/\d{4}-\d{2}-\d{2} \d{2}:\d{2}/g) || [""])[0];
+        const content = detail[0];
+        const rawTime = detail[1];
         const time: Date = new Date(rawTime);
 
         const news = new News({title, url, time, content});
@@ -34,18 +35,21 @@ const parse = async (response: superagent.Response) => {
 const getContent = async (url: string) => {
     const response = await remoteGet(url);
     const $ = cheerio.load(response.text);
-    let result: string = "<p>" + $(".article-summary>p").html() || "" + "</p>";
-    $("#artibody>p").each((index, element) => {
+    let result: string = "<p>" + $(".article-summ>p").html() || "" + "</p>";
+    $(".articleCont>p").each((index, element) => {
         result += "<p>" + $(element).html() || "" + "</p>";
     });
-    return result;
+    const rawTime: string = $("time").text().trim();
+    return [result, rawTime];
 };
 
 export default async () => {
-    while (true) {
-        const response = await remoteGet("https://www.cnbeta.com");
-        console.log(`Spider: ${response.status}`);
-        parse(response);
-        await sleep(config.spider.hostCheckInterval * 1000);
+    for (let p = 1; p <= config.spider.maxPage; p++) {
+        try {
+            const response = await remoteGet(`https://m.cnbeta.com/list/latest_${p}.htm`);
+            await parse(response);
+        } catch (err) {
+            console.log(err);
+        }
     }
 };

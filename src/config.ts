@@ -5,5 +5,6 @@ export default {
   spider: {
     hostCheckInterval: 3600,
     interval: 0.5,
+    maxPage: 10,
   },
 };
