@@ -7,12 +7,14 @@ import superagent = require("superagent");
 import sleep from "./sleep";
 
 const parse = async (response: superagent.Response) => {
+    console.log("parse");
     const $ = cheerio.load(response.text);
-    const items: CheerioElement[] = $("li.clear").get();
-    for (const element of items) {
+    let count = 0;
+    $("li.clear").each(async (index, element) => {
+        count += 1;
         const title: string = $(element).find("a").first().text().trim();
         if (title === "" || await News.findOne({title}).exec() !== null) {
-            continue;
+            return;
         }
         const url: string = "https://m.cnbeta.com" + $(element).find("a").first().attr("href");
 
@@ -21,7 +23,8 @@ const parse = async (response: superagent.Response) => {
             detail = await getContent(url);
         } catch (err) {
             console.log(err);
-            continue;
+            count -= 1;
+            return;
         }
         const content = detail[0];
         const rawTime = detail[1];
@@ -29,6 +32,10 @@ const parse = async (response: superagent.Response) => {
 
         const news = new News({title, url, time, content});
         news.save((err) => {if (err) {console.log(err); }});
+        count -= 1;
+    });
+    while (count > 0) {
+        await sleep(1000);
     }
 };
 
