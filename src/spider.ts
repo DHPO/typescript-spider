@@ -14,6 +14,7 @@ const parse = async (response: superagent.Response) => {
         count += 1;
         const title: string = $(element).find("a").first().text().trim();
         if (title === "" || await News.findOne({title}).exec() !== null) {
+            count -= 1;
             return;
         }
         const url: string = "https://m.cnbeta.com" + $(element).find("a").first().attr("href");
